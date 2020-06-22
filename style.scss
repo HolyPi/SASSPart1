@@ -1,32 +1,58 @@
+$size: 200px;
+$border-size: 1px;
+$positioning: relative;
+$border-type: solid;
+$rotation: 45deg;
+$petals: 5;
+
 /* Container styles */
 .container {
-  width: 200px;
-  height: 200px;
-  border: 1px solid;
-  position: relative;
+  width: $size;
+  height: $size;
+  border: $border-size $border-type;
+  position: $positioning;
+
+  /* Style all of the child divs */
+/* These styles shared by all children */
+    & > div {
+      position: absolute;
+      border-radius: 0 70% 40% 70%;
+      border: $border-size $border-type;
+      width: $size * 0.6;
+      height: $size * 0.6;
+      /* Position these in the center */
+      left: 10px;
+      top: 50px;
+      /* Rotate 45 deg points the point at the top */
+      transform: rotate(45deg);
+      /* Move the point of transformation to the lower right */
+      transform-origin: 90px 90px;
+      animation-duration: 6000ms;
+      animation-iteration-count: 1;
+      /* Important! Without this the elements will snap
+      to their starting positions when the animation ends! */
+      animation-fill-mode: forwards;
+    }
+
+    @for $i from 1 through $petals {
+      $hue: ($i - 1) * 60;
+      & > div {
+        &:nth-child(#{$i}) {
+          animation-name: bloom-#{$i};
+          background-color: hsla($hue, 100%, 50%, 0.2);
+        }
+      }
+    }
 }
 
-/* Style all of the child divs */
-/* These styles shared by all children */
-.container > div {
-  position: absolute;
-  border-radius: 0 70% 40% 70%;
-  border: 1px solid;
-  width: 120px;
-  height: 120px;
-  /* Position these in the center */
-  left: 10px;
-  top: 50px;
-  /* Rotate 45 deg points the point at the top */
-  transform: rotate(45deg);
-  /* Move the point of transformation to the lower right */
-  transform-origin: 90px 90px;
-  animation-duration: 6000ms;
-  animation-iteration-count: 1;
-  /* Important! Without this the elements will snap
-  to their starting positions when the animation ends! */
-  animation-fill-mode: forwards;
+@for $i from 1 through $petals {
+  $angle: ($i - 2) * 45deg;
+  @keyframes bloom-#{$i} {
+    0% { transform: rotate(45deg); }
+    100% { transform: rotate($angle); }
+  }
 }
+
 
 /* These styles apply to individual children */
 
@@ -60,17 +86,17 @@
 }
 
 @keyframes bloom-2 {
-  0% { transform: rotate(45deg); }
+  0% { transform: rotate($rotation); }
   100% { transform: rotate(135deg); }
 }
 
 @keyframes bloom-4 {
-  0% { transform: rotate(45deg); }
+  0% { transform: rotate($rotation); }
   100% { transform: rotate(0deg); }
 }
 
 @keyframes bloom-5 {
-  0% { transform: rotate(45deg); }
+  0% { transform: rotate($rotation); }
   100% { transform: rotate(90deg); }
 }
 
